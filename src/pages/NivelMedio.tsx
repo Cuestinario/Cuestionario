@@ -11,11 +11,42 @@ import {
     Legend,
 } from 'chart.js';
 
-// Registrar los componentes requeridos en ChartJS
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 import ComentarioIcono from '../assets/images/comentario.svg';
 import ComentarioIconoEnviado from '../assets/images/comentario_enviado.svg';
+
+const obtenerMensajePorSeccion = (seccion: string, promedio: number) => {
+    switch (seccion) {
+        case "Procesos de Gobernanza y Gestión":
+            if (promedio <= 1.99) return "Existen políticas de gobernanza, pero no están integradas plenamente en toda la organización. La supervisión es limitada, y el cumplimiento es esporádico.";
+            if (promedio <= 3.99) return "Hay políticas de gobernanza bien definidas y aplicadas en la mayoría de las áreas. Se realizan auditorías periódicas, pero puede faltar mayor integración y automatización.";
+            return "Las políticas de gobernanza están integradas en toda la organización, se aplican de manera uniforme y cuentan con revisiones regulares para garantizar la calidad de los datos.";
+
+        case "Procesos Analíticos":
+            if (promedio <= 1.99) return "Los procesos de análisis de datos no están sistematizados y son esporádicos, lo que limita la capacidad de obtener insights útiles para la toma de decisiones.";
+            if (promedio <= 3.99) return "Los análisis de datos se realizan regularmente y son útiles para la toma de decisiones en diversas áreas, aunque su alcance es limitado y no aprovecha aún el análisis predictivo avanzado.";
+            return "La empresa aplica análisis avanzados, incluyendo analítica predictiva en algunas áreas, y los resultados se utilizan activamente en la toma de decisiones estratégicas.";
+
+        case "Infraestructura Tecnológica":
+            if (promedio <= 1.99) return "Tecnológica: La infraestructura está presente, pero es insuficiente para un análisis de datos a gran escala y no permite un flujo de datos eficiente entre sistemas.";
+            if (promedio <= 3.99) return "La infraestructura permite un manejo eficaz de los datos, pero es necesario invertir en mayor escalabilidad y eficiencia para soportar análisis más avanzados.";
+            return "La infraestructura es robusta, permite una integración de datos eficiente y soporta herramientas avanzadas de análisis de datos, como machine learning en áreas selectas.";
+
+        case "Capacidades y Competencias":
+            if (promedio <= 1.99) return "Las competencias en análisis de datos varían entre los empleados, y la capacitación es ocasional y no prioritaria.";
+            if (promedio <= 3.99) return " La mayoría de los empleados posee una competencia intermedia en análisis de datos, y la empresa ofrece capacitaciones frecuentes para fortalecer estas habilidades.";
+            return "Los empleados están bien capacitados y cuentan con competencias avanzadas en análisis de datos. La empresa promueve la especialización y ofrece oportunidades de desarrollo para el uso de herramientas avanzadas.";
+
+        case "Estrategia y Cultura":
+            if (promedio <= 1.99) return "La empresa ha identificado el valor de los datos en su estrategia, pero la cultura de datos no es sólida, y algunos empleados aún no adoptan este enfoque en su trabajo diario.";
+            if (promedio <= 3.99) return "La cultura de datos está bastante integrada, y el uso de datos se valora a nivel estratégico en la mayoría de las áreas, aunque algunos departamentos podrían no estar tan alineados.";
+            return "La estrategia empresarial está alineada con un enfoque orientado a los datos, y existe una cultura de toma de decisiones basada en datos en toda la organización, respaldada por la alta dirección.";
+
+        default:
+            return '';
+    }
+};
 
 const NivelMedio: React.FC = () => {
     const preguntas = [
@@ -96,6 +127,38 @@ const NivelMedio: React.FC = () => {
         return total / respuestasSeccion.length || 0;
     };
 
+    const calcularPromedioGeneral = () => {
+        const totalRespuestas = [
+            calcularPromedioPorSeccion(0, 5),
+            calcularPromedioPorSeccion(5, 10),
+            calcularPromedioPorSeccion(10, 15),
+            calcularPromedioPorSeccion(15, 20),
+            calcularPromedioPorSeccion(20, 25)
+        ];
+
+        const suma = totalRespuestas.reduce((acumulado, actual) => acumulado + actual, 0);
+        return suma / totalRespuestas.length;
+    };
+
+    const dataGrafico = {
+        labels: secciones,
+        datasets: [
+            {
+                label: 'Promedio por Sección',
+                data: [
+                    calcularPromedioPorSeccion(0, 5),
+                    calcularPromedioPorSeccion(5, 10),
+                    calcularPromedioPorSeccion(10, 15),
+                    calcularPromedioPorSeccion(15, 20),
+                    calcularPromedioPorSeccion(20, 25)
+                ],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }
+        ]
+    };
+
     const renderSeccionPreguntas = (titulo: string, preguntasSeccion: string[], offset: number) => (
         <div>
             <h2 className="text-2xl mb-6 font-bold text-black">{titulo}</h2>
@@ -124,7 +187,7 @@ const NivelMedio: React.FC = () => {
                                 onChange={(e) => manejarComentarioCambio(index + offset, e.target.value)}
                             />
                             <button
-                                className="mt-2 bg-blue-500 text-white py-2 px-4 rounded w-full md:w-1/2"
+                                className="mt-2 bg-red-600 text-white py-2 px-4 rounded w-full md:w-1/2"
                                 onClick={() => manejarComentarioEnviar(index + offset)}
                             >
                                 Enviar
@@ -140,39 +203,6 @@ const NivelMedio: React.FC = () => {
         setMostrarGrafico(true);
     };
 
-    // Función para calcular el promedio general
-    const calcularPromedioGeneral = () => {
-        const totalRespuestas = [
-            calcularPromedioPorSeccion(0, 5),
-            calcularPromedioPorSeccion(5, 10),
-            calcularPromedioPorSeccion(10, 15),
-            calcularPromedioPorSeccion(15, 20),
-            calcularPromedioPorSeccion(20, 25)
-        ];
-
-        const suma = totalRespuestas.reduce((acumulado, actual) => acumulado + actual, 0);
-        return suma / totalRespuestas.length;
-    };
-
-    const dataGrafico = {
-        labels: secciones,
-        datasets: [
-            {
-                label: 'Promedio por Sección',
-                data: [
-                    calcularPromedioPorSeccion(0, 5),
-                    calcularPromedioPorSeccion(5, 10),
-                    calcularPromedioPorSeccion(10, 15),
-                    calcularPromedioPorSeccion(15, 20),
-                    calcularPromedioPorSeccion(20, 25)
-                ],
-                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Color actualizado
-                borderColor: 'rgba(54, 162, 235, 1)', // Color actualizado
-                borderWidth: 1
-            }
-        ]
-    };
-
     return (
         <div className="nivel-basico container mx-auto p-6 bg-white shadow-lg rounded-lg">
             {renderSeccionPreguntas("Procesos de Gobernanza y Gestión", preguntas.slice(0, 5), 0)}
@@ -182,20 +212,60 @@ const NivelMedio: React.FC = () => {
             {renderSeccionPreguntas("Estrategia y Cultura", preguntas.slice(20, 25), 20)}
 
             <div className="mt-6">
-    <h2 className="text-xl font-bold">Promedio General: {calcularPromedioGeneral().toFixed(2)}</h2>
-    <button
-        className="mt-6 bg-[#00215B] text-white py-2 px-4 rounded w-full md:w-1/2"
-        onClick={manejarEnvioFinal}
-    >
-        Enviar
-    </button>
-</div>
+                <h3 className="text-xl font-bold">Promedio General: {calcularPromedioGeneral().toFixed(2)}</h3>
+            </div>
 
+            <button
+                className="mt-6 bg-red-600 text-white py-2 px-4 rounded w-full md:w-1/2"
+                onClick={manejarEnvioFinal}
+            >
+                Enviar
+            </button>
 
+            {/* Mostrar gráfico y tabla */}
             {mostrarGrafico && (
-                <div className="mt-8" style={{ width: '80%', height: '500px' }}>
-                    <h2 className="text-2xl font-bold text-black mb-4">Promedio de Respuestas por Sección</h2>
-                    <Radar data={dataGrafico} width="100%" height="100%" />
+                <div className="mt-8 bg-white p-4 shadow-lg rounded-lg" style={{ width: '100%', height: 'auto' }}>
+                    <h2 className="text-2xl font-bold text-black mb-4 text-center">Promedio de Respuestas por Sección</h2>
+
+                    {/* Contenedor del gráfico ocupando todo el espacio disponible */}
+                    <div className="relative" style={{ width: '100%', height: '400px' }}>
+                        <Radar data={dataGrafico} width="100%" height="100%" />
+                    </div>
+
+                    {/* Tabla de promedios por sección */}
+                    <div className="mt-6 overflow-x-auto">
+                    <table className="min-w-full table-auto border-collapse">
+    <thead>
+        <tr className="bg-red-600"> {/* Fondo rojo fuerte */}
+            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Sección</th>
+            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Promedio</th>
+            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100 text-center">¿Cómo se encuentra tu empresa?</th>
+        </tr>
+    </thead>
+    <tbody>
+        {secciones.map((seccion, index) => {
+            const promedio = [
+                calcularPromedioPorSeccion(0, 5),
+                calcularPromedioPorSeccion(5, 10),
+                calcularPromedioPorSeccion(10, 15),
+                calcularPromedioPorSeccion(15, 20),
+                calcularPromedioPorSeccion(20, 25),
+            ][index];
+
+            const mensaje = obtenerMensajePorSeccion(seccion, promedio);
+
+            return (
+                <tr key={index} className="hover:bg-red-100"> {/* Efecto hover en rojo claro */}
+                    <td className="px-4 py-2 border-b border-red-500 text-red-900">{seccion}</td>
+                    <td className="px-4 py-2 border-b border-red-500 text-red-900">{promedio.toFixed(2)}</td>
+                    <td className="px-4 py-2 border-b border-red-500 text-red-900 text-center">{mensaje}</td> {/* Texto centrado */}
+                </tr>
+            );
+        })}
+    </tbody>
+</table>
+
+                    </div>
                 </div>
             )}
         </div>

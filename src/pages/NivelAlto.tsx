@@ -11,11 +11,43 @@ import {
     Legend,
 } from 'chart.js';
 
-// Register required components globally with ChartJS
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 import ComentarioIcono from '../assets/images/comentario.svg';
 import ComentarioIconoEnviado from '../assets/images/comentario_enviado.svg';
+
+const obtenerMensajePorSeccion = (seccion: string, promedio: number) => {
+    switch (seccion) {
+        case "Procesos de Gobernanza y Gestión":
+            if (promedio <= 1.99) return "Existen políticas y controles básicos de gobernanza, pero carecen de actualización y no cubren aspectos avanzados como la calidad de datos o la privacidad en profundidad.";
+            if (promedio <= 3.99) return "La gobernanza es sólida y se aplican políticas avanzadas de calidad y seguridad de datos, aunque todavía podrían mejorarse los procesos de automatización y monitoreo en tiempo real.";
+            return "La empresa cuenta con un marco de gobernanza de datos altamente automatizado y en tiempo real, con políticas avanzadas que incluyen calidad de datos, seguridad, y cumplimiento normativo, optimizadas para una adaptación ágil a cambios regulatorios o de mercado.";
+
+        case "Procesos Analíticos":
+            if (promedio <= 1.99) return "Los análisis avanzados son limitados o no están bien integrados; la empresa no aprovecha del todo las herramientas analíticas más sofisticadas ni modelos predictivos o prescriptivos.";
+            if (promedio <= 3.99) return "La empresa realiza análisis predictivos y prescriptivos en varias áreas, aunque no siempre con la agilidad deseada. Los datos se utilizan en la mayoría de decisiones estratégicas, pero no siempre se maximizan en todas las áreas.";
+            return "Los análisis son altamente sofisticados, incluyendo machine learning y modelos prescriptivos que guían decisiones estratégicas y operativas en tiempo real. La analítica de datos es un motor clave de innovación y eficiencia en la empresa.";
+
+        case "Infraestructura Tecnológica":
+            if (promedio <= 1.99) return " La infraestructura es adecuada para tareas básicas, pero tiene limitaciones para soportar grandes volúmenes de datos y análisis en tiempo real, restringiendo la eficiencia y escalabilidad.";
+            if (promedio <= 3.99) return "La infraestructura permite análisis complejos y procesamiento de grandes volúmenes de datos, aunque algunas áreas de tecnología podrían beneficiarse de actualizaciones para optimizar la eficiencia.";
+            return "La infraestructura es de última generación, con capacidad para procesar grandes volúmenes de datos en tiempo real y de manera segura, permitiendo una flexibilidad completa para adaptarse a los cambios tecnológicos.";
+
+        case "Capacidades y Competencias":
+            if (promedio <= 1.99) return "A pesar de los conocimientos avanzados del personal, no se incentiva suficientemente el aprendizaje continuo ni se fomenta el dominio de herramientas analíticas más complejas.";
+            if (promedio <= 3.99) return " La mayoría del personal cuenta con competencias avanzadas, y se ofrecen programas continuos de capacitación, aunque la especialización en nuevas herramientas podría ser más consistente.";
+            return "Los empleados tienen un dominio avanzado de las herramientas y técnicas analíticas, con programas de capacitación continua que fomentan la especialización y la adopción de tecnologías emergentes.";
+
+        case "Estrategia y Cultura":
+            if (promedio <= 1.99) return "La cultura de datos existe, pero no está completamente alineada con la innovación, y algunos equipos no se sienten motivados a adoptar un enfoque de datos en todas las decisiones.";
+            if (promedio <= 3.99) return "Existe una cultura de datos bien establecida, y el uso de datos se considera esencial, pero algunas decisiones estratégicas aún podrían beneficiarse de una integración más profunda de la analítica.";
+            return "La estrategia está profundamente alineada con una cultura de datos, y la organización valora el uso de datos en todos los niveles, con una orientación proactiva hacia la innovación, el aprendizaje continuo y la mejora de procesos a través de la analítica avanzada.";
+
+        default:
+            return '';
+    }
+};
+
 
 const NivelAlto: React.FC = () => {
     const preguntas = [
@@ -96,6 +128,38 @@ const NivelAlto: React.FC = () => {
         return total / respuestasSeccion.length || 0;
     };
 
+    const calcularPromedioGeneral = () => {
+        const totalRespuestas = [
+            calcularPromedioPorSeccion(0, 5),
+            calcularPromedioPorSeccion(5, 10),
+            calcularPromedioPorSeccion(10, 15),
+            calcularPromedioPorSeccion(15, 20),
+            calcularPromedioPorSeccion(20, 25)
+        ];
+
+        const suma = totalRespuestas.reduce((acumulado, actual) => acumulado + actual, 0);
+        return suma / totalRespuestas.length;
+    };
+
+    const dataGrafico = {
+        labels: secciones,
+        datasets: [
+            {
+                label: 'Promedio por Sección',
+                data: [
+                    calcularPromedioPorSeccion(0, 5),
+                    calcularPromedioPorSeccion(5, 10),
+                    calcularPromedioPorSeccion(10, 15),
+                    calcularPromedioPorSeccion(15, 20),
+                    calcularPromedioPorSeccion(20, 25)
+                ],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }
+        ]
+    };
+
     const renderSeccionPreguntas = (titulo: string, preguntasSeccion: string[], offset: number) => (
         <div>
             <h2 className="text-2xl mb-6 font-bold text-black">{titulo}</h2>
@@ -140,40 +204,8 @@ const NivelAlto: React.FC = () => {
         setMostrarGrafico(true);
     };
 
-    const calcularPromedioGeneral = () => {
-        const totalRespuestas = [
-            calcularPromedioPorSeccion(0, 5),
-            calcularPromedioPorSeccion(5, 10),
-            calcularPromedioPorSeccion(10, 15),
-            calcularPromedioPorSeccion(15, 20),
-            calcularPromedioPorSeccion(20, 25)
-        ];
-
-        const suma = totalRespuestas.reduce((acumulado, actual) => acumulado + actual, 0);
-        return suma / totalRespuestas.length;
-    };
-
-    const dataGrafico = {
-        labels: secciones,
-        datasets: [
-            {
-                label: 'Promedio por Sección',
-                data: [
-                    calcularPromedioPorSeccion(0, 5),
-                    calcularPromedioPorSeccion(5, 10),
-                    calcularPromedioPorSeccion(10, 15),
-                    calcularPromedioPorSeccion(15, 20),
-                    calcularPromedioPorSeccion(20, 25)
-                ],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
-            }
-        ]
-    };
-
     return (
-        <div className="nivel-alto container mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <div className="nivel-basico container mx-auto p-6 bg-white shadow-lg rounded-lg">
             {renderSeccionPreguntas("Procesos de Gobernanza y Gestión", preguntas.slice(0, 5), 0)}
             {renderSeccionPreguntas("Procesos Analíticos", preguntas.slice(5, 10), 5)}
             {renderSeccionPreguntas("Infraestructura Tecnológica", preguntas.slice(10, 15), 10)}
@@ -191,10 +223,50 @@ const NivelAlto: React.FC = () => {
                 Enviar
             </button>
 
+            {/* Mostrar gráfico y tabla */}
             {mostrarGrafico && (
-                <div className="mt-8" style={{ width: '80%', height: '500px' }}>
-                    <h2 className="text-2xl font-bold text-black mb-4">Promedio de Respuestas por Sección</h2>
-                    <Radar data={dataGrafico} width="100%" height="100%" />
+                <div className="mt-8 bg-white p-4 shadow-lg rounded-lg" style={{ width: '100%', height: 'auto' }}>
+                    <h2 className="text-2xl font-bold text-black mb-4 text-center">Promedio de Respuestas por Sección</h2>
+
+                    {/* Contenedor del gráfico ocupando todo el espacio disponible */}
+                    <div className="relative" style={{ width: '100%', height: '400px' }}>
+                        <Radar data={dataGrafico} width="100%" height="100%" />
+                    </div>
+
+                    {/* Tabla de promedios por sección */}
+                    <div className="mt-6 overflow-x-auto">
+                    <table className="min-w-full table-auto border-collapse">
+    <thead>
+        <tr className="bg-red-600"> {/* Fondo rojo fuerte */}
+            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Sección</th>
+            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Promedio</th>
+            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100 text-center">¿Cómo se encuentra tu empresa?</th>
+        </tr>
+    </thead>
+    <tbody>
+        {secciones.map((seccion, index) => {
+            const promedio = [
+                calcularPromedioPorSeccion(0, 5),
+                calcularPromedioPorSeccion(5, 10),
+                calcularPromedioPorSeccion(10, 15),
+                calcularPromedioPorSeccion(15, 20),
+                calcularPromedioPorSeccion(20, 25),
+            ][index];
+
+            const mensaje = obtenerMensajePorSeccion(seccion, promedio);
+
+            return (
+                <tr key={index} className="hover:bg-red-100"> {/* Efecto hover en rojo claro */}
+                    <td className="px-4 py-2 border-b border-red-500 text-red-900">{seccion}</td>
+                    <td className="px-4 py-2 border-b border-red-500 text-red-900">{promedio.toFixed(2)}</td>
+                    <td className="px-4 py-2 border-b border-red-500 text-red-900 text-center">{mensaje}</td> {/* Texto centrado */}
+                </tr>
+            );
+        })}
+    </tbody>
+</table>
+
+                    </div>
                 </div>
             )}
         </div>
