@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
 
         {/* Copyright */}
         <div className="text-center text-sm mt-4">
-          <p>&copy; {new Date().getFullYear()} Tu Empresa. Todos los derechos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} Daturity. Todos los derechos reservados.</p>
         </div>
 
         {/* Iconos de X e Instagram */}
