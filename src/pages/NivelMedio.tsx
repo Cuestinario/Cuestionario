@@ -55,32 +55,32 @@ const NivelMedio: React.FC = () => {
         "¿Se asignan responsables específicos para supervisar el cumplimiento de las políticas de datos?",
         "¿Hay procesos establecidos para la gestión de acceso y seguridad de los datos en distintos niveles?",
         "¿La gobernanza de datos está alineada con los objetivos estratégicos de la empresa?",
-    
+
         "¿La empresa utiliza datos de manera consistente para realizar análisis descriptivos y algunos análisis predictivos?",
         "¿Se generan reportes periódicos que ayudan a detectar patrones o tendencias en los datos?",
         "¿Existen procedimientos estructurados para la recopilación, limpieza y análisis de datos?",
         "¿La empresa utiliza herramientas que permiten realizar análisis automatizados de datos?",
         "¿Los análisis de datos se emplean para optimizar ciertos procesos o decisiones clave en la organización?",
-    
+
         "¿La infraestructura tecnológica permite almacenar y procesar datos de manera eficiente para el volumen actual de la empresa?",
         "¿Existen sistemas que permiten a distintos departamentos compartir y acceder a datos cuando es necesario?",
         "¿La empresa cuenta con herramientas analíticas básicas y avanzadas, aunque limitadas en algunos aspectos?",
         "¿La infraestructura es suficiente para soportar reportes automatizados y almacenamiento de grandes volúmenes de datos?",
         "¿La tecnología de la empresa se actualiza periódicamente para mejorar la capacidad de análisis de datos?",
-    
+
         "¿El personal cuenta con habilidades intermedias en análisis de datos y uso de herramientas de análisis?",
         "¿Se ofrecen programas de capacitación para mejorar las competencias analíticas y técnicas del personal?",
         "¿Hay un equipo de personas con conocimientos específicos en análisis de datos y modelado básico?",
         "¿Los empleados tienen conocimientos básicos sobre cómo interpretar y utilizar los datos en sus tareas diarias?",
         "¿La empresa fomenta el desarrollo de habilidades en análisis y manejo de datos entre su personal?",
-    
+
         "¿La analítica y el uso de datos están integrados en las decisiones estratégicas de varias áreas de la empresa?",
         "¿Existe una cultura organizacional que incentiva el uso de datos para justificar decisiones?",
         "¿La alta dirección reconoce y promueve el valor de los datos y la analítica en la empresa?",
         "¿Hay una estrategia clara para aumentar el uso de datos y análisis en la toma de decisiones a lo largo de la organización?",
         "¿Se fomenta la colaboración entre departamentos para mejorar el uso y análisis de datos?"
     ];
-    
+
 
     const secciones = [
         "Procesos de Gobernanza y Gestión",
@@ -229,41 +229,50 @@ const NivelMedio: React.FC = () => {
 
                     {/* Contenedor del gráfico ocupando todo el espacio disponible */}
                     <div className="relative" style={{ width: '100%', height: '400px' }}>
-                        <Radar data={dataGrafico} width="100%" height="100%" />
+                        <Radar data={dataGrafico}
+                            options={{
+                                scales: {
+                                    r: {
+                                        beginAtZero: true,
+                                        min: 0,
+                                        max: 5
+                                    }
+                                }
+                            }} width="100%" height="100%" />
                     </div>
 
                     {/* Tabla de promedios por sección */}
                     <div className="mt-6 overflow-x-auto">
-                    <table className="min-w-full table-auto border-collapse">
-    <thead>
-        <tr className="bg-red-600"> {/* Fondo rojo fuerte */}
-            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Sección</th>
-            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Promedio</th>
-            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100 text-center">¿Cómo se encuentra tu empresa?</th>
-        </tr>
-    </thead>
-    <tbody>
-        {secciones.map((seccion, index) => {
-            const promedio = [
-                calcularPromedioPorSeccion(0, 5),
-                calcularPromedioPorSeccion(5, 10),
-                calcularPromedioPorSeccion(10, 15),
-                calcularPromedioPorSeccion(15, 20),
-                calcularPromedioPorSeccion(20, 25),
-            ][index];
+                        <table className="min-w-full table-auto border-collapse">
+                            <thead>
+                                <tr className="bg-red-600"> {/* Fondo rojo fuerte */}
+                                    <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Sección</th>
+                                    <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Promedio</th>
+                                    <th className="px-4 py-2 text-left border-b border-red-500 text-red-100 text-center">¿Cómo se encuentra tu empresa?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {secciones.map((seccion, index) => {
+                                    const promedio = [
+                                        calcularPromedioPorSeccion(0, 5),
+                                        calcularPromedioPorSeccion(5, 10),
+                                        calcularPromedioPorSeccion(10, 15),
+                                        calcularPromedioPorSeccion(15, 20),
+                                        calcularPromedioPorSeccion(20, 25),
+                                    ][index];
 
-            const mensaje = obtenerMensajePorSeccion(seccion, promedio);
+                                    const mensaje = obtenerMensajePorSeccion(seccion, promedio);
 
-            return (
-                <tr key={index} className="hover:bg-red-100"> {/* Efecto hover en rojo claro */}
-                    <td className="px-4 py-2 border-b border-red-500 text-red-900">{seccion}</td>
-                    <td className="px-4 py-2 border-b border-red-500 text-red-900">{promedio.toFixed(2)}</td>
-                    <td className="px-4 py-2 border-b border-red-500 text-red-900 text-center">{mensaje}</td> {/* Texto centrado */}
-                </tr>
-            );
-        })}
-    </tbody>
-</table>
+                                    return (
+                                        <tr key={index} className="hover:bg-red-100"> {/* Efecto hover en rojo claro */}
+                                            <td className="px-4 py-2 border-b border-red-500 text-red-900">{seccion}</td>
+                                            <td className="px-4 py-2 border-b border-red-500 text-red-900">{promedio.toFixed(2)}</td>
+                                            <td className="px-4 py-2 border-b border-red-500 text-red-900 text-center">{mensaje}</td> {/* Texto centrado */}
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
 
                     </div>
                 </div>

@@ -56,32 +56,32 @@ const NivelAlto: React.FC = () => {
         "¿La gestión de datos incluye protocolos de seguridad avanzados, y los roles y accesos están definidos de manera granular y dinámica?",
         "¿Los estándares de gobernanza de datos son revisados y mejorados de forma continua para adaptarse a nuevos desafíos y regulaciones?",
         "¿La gobernanza de datos está integrada en todas las áreas de la empresa y respalda los objetivos estratégicos de manera efectiva?",
-    
+
         "¿La empresa utiliza análisis predictivo y prescriptivo avanzado para la toma de decisiones en todas las áreas estratégicas?",
         "¿Los procesos analíticos están automatizados y permiten generar insights en tiempo real para diferentes departamentos?",
         "¿Se utilizan técnicas avanzadas de modelado y análisis de datos, incluyendo machine learning e inteligencia artificial?",
         "¿Los datos se emplean de manera proactiva para identificar y mitigar riesgos, optimizar procesos y descubrir oportunidades de negocio?",
         "¿Existe una sólida infraestructura que soporta modelos analíticos avanzados y facilita la experimentación y mejora continua de los procesos?",
-    
+
         "¿La empresa cuenta con una infraestructura tecnológica escalable que permite manejar grandes volúmenes de datos en tiempo real?",
         "¿Existen herramientas y plataformas avanzadas que permiten la integración y acceso seguro a datos de múltiples fuentes en toda la organización?",
         "¿La infraestructura permite el uso de herramientas avanzadas de analítica y modelos de machine learning e inteligencia artificial?",
         "¿Los sistemas están diseñados para adaptarse a cambios y crecer según la demanda de datos, con mínima intervención manual?",
         "¿La empresa invierte de forma continua en nuevas tecnologías y mejoras que optimizan el procesamiento y análisis de datos?",
-    
+
         "¿El equipo tiene un nivel avanzado de competencia en ciencia de datos, estadística y técnicas de análisis de datos?",
         "¿La empresa fomenta una cultura de aprendizaje continuo, proporcionando capacitación avanzada y certificaciones en áreas de análisis de datos y tecnología?",
         "¿Existe un equipo especializado en análisis de datos que colabora con todas las áreas de la empresa para apoyar la toma de decisiones basada en datos?",
         "¿Los empleados a todos los niveles comprenden el valor estratégico de los datos y son capaces de interpretar y aplicar insights en su trabajo diario?",
         "¿La empresa promueve la experimentación y la innovación en el análisis de datos, incentivando el desarrollo de nuevas soluciones y modelos?",
-    
+
         "¿La empresa tiene una estrategia bien definida y alineada que prioriza el uso de datos y la analítica para alcanzar sus objetivos estratégicos?",
         "¿La alta dirección lidera y promueve activamente una cultura de toma de decisiones basada en datos en toda la organización?",
         "¿La organización está comprometida con la innovación y la transformación digital, utilizando datos como un activo central en todas las áreas?",
         "¿Existe una cultura organizacional donde cada área colabora y comparte datos para maximizar el valor de los insights?",
         "¿Los datos son vistos como un activo fundamental, y todos los colaboradores están alineados con la visión de ser una empresa orientada al análisis y manejo de datos?"
     ];
-    
+
 
     const secciones = [
         "Procesos de Gobernanza y Gestión",
@@ -230,41 +230,50 @@ const NivelAlto: React.FC = () => {
 
                     {/* Contenedor del gráfico ocupando todo el espacio disponible */}
                     <div className="relative" style={{ width: '100%', height: '400px' }}>
-                        <Radar data={dataGrafico} width="100%" height="100%" />
+                        <Radar data={dataGrafico}
+                            options={{
+                                scales: {
+                                    r: {
+                                        beginAtZero: true,
+                                        min: 0,
+                                        max: 5
+                                    }
+                                }
+                            }} width="100%" height="100%" />
                     </div>
 
                     {/* Tabla de promedios por sección */}
                     <div className="mt-6 overflow-x-auto">
-                    <table className="min-w-full table-auto border-collapse">
-    <thead>
-        <tr className="bg-red-600"> {/* Fondo rojo fuerte */}
-            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Sección</th>
-            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Promedio</th>
-            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100 text-center">¿Cómo se encuentra tu empresa?</th>
-        </tr>
-    </thead>
-    <tbody>
-        {secciones.map((seccion, index) => {
-            const promedio = [
-                calcularPromedioPorSeccion(0, 5),
-                calcularPromedioPorSeccion(5, 10),
-                calcularPromedioPorSeccion(10, 15),
-                calcularPromedioPorSeccion(15, 20),
-                calcularPromedioPorSeccion(20, 25),
-            ][index];
+                        <table className="min-w-full table-auto border-collapse">
+                            <thead>
+                                <tr className="bg-red-600"> {/* Fondo rojo fuerte */}
+                                    <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Sección</th>
+                                    <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Promedio</th>
+                                    <th className="px-4 py-2 text-left border-b border-red-500 text-red-100 text-center">¿Cómo se encuentra tu empresa?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {secciones.map((seccion, index) => {
+                                    const promedio = [
+                                        calcularPromedioPorSeccion(0, 5),
+                                        calcularPromedioPorSeccion(5, 10),
+                                        calcularPromedioPorSeccion(10, 15),
+                                        calcularPromedioPorSeccion(15, 20),
+                                        calcularPromedioPorSeccion(20, 25),
+                                    ][index];
 
-            const mensaje = obtenerMensajePorSeccion(seccion, promedio);
+                                    const mensaje = obtenerMensajePorSeccion(seccion, promedio);
 
-            return (
-                <tr key={index} className="hover:bg-red-100"> {/* Efecto hover en rojo claro */}
-                    <td className="px-4 py-2 border-b border-red-500 text-red-900">{seccion}</td>
-                    <td className="px-4 py-2 border-b border-red-500 text-red-900">{promedio.toFixed(2)}</td>
-                    <td className="px-4 py-2 border-b border-red-500 text-red-900 text-center">{mensaje}</td> {/* Texto centrado */}
-                </tr>
-            );
-        })}
-    </tbody>
-</table>
+                                    return (
+                                        <tr key={index} className="hover:bg-red-100"> {/* Efecto hover en rojo claro */}
+                                            <td className="px-4 py-2 border-b border-red-500 text-red-900">{seccion}</td>
+                                            <td className="px-4 py-2 border-b border-red-500 text-red-900">{promedio.toFixed(2)}</td>
+                                            <td className="px-4 py-2 border-b border-red-500 text-red-900 text-center">{mensaje}</td> {/* Texto centrado */}
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
 
                     </div>
                 </div>

@@ -233,41 +233,50 @@ const NivelBasico: React.FC = () => {
 
                     {/* Contenedor del gráfico ocupando todo el espacio disponible */}
                     <div className="relative" style={{ width: '100%', height: '400px' }}>
-                        <Radar data={dataGrafico} width="100%" height="100%" />
+                        <Radar data={dataGrafico}
+                            options={{
+                                scales: {
+                                    r: {
+                                        beginAtZero: true,
+                                        min: 0,
+                                        max: 5
+                                    }
+                                }
+                            }} width="100%" height="100%" />
                     </div>
 
                     {/* Tabla de promedios por sección */}
                     <div className="mt-6 overflow-x-auto">
-                    <table className="min-w-full table-auto border-collapse">
-    <thead>
-        <tr className="bg-red-600"> {/* Fondo rojo fuerte */}
-            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Sección</th>
-            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Promedio</th>
-            <th className="px-4 py-2 text-left border-b border-red-500 text-red-100 text-center">¿Cómo se encuentra tu empresa?</th>
-        </tr>
-    </thead>
-    <tbody>
-        {secciones.map((seccion, index) => {
-            const promedio = [
-                calcularPromedioPorSeccion(0, 5),
-                calcularPromedioPorSeccion(5, 10),
-                calcularPromedioPorSeccion(10, 15),
-                calcularPromedioPorSeccion(15, 20),
-                calcularPromedioPorSeccion(20, 25),
-            ][index];
+                        <table className="min-w-full table-auto border-collapse">
+                            <thead>
+                                <tr className="bg-red-600"> {/* Fondo rojo fuerte */}
+                                    <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Sección</th>
+                                    <th className="px-4 py-2 text-left border-b border-red-500 text-red-100">Promedio</th>
+                                    <th className="px-4 py-2 text-left border-b border-red-500 text-red-100 text-center">¿Cómo se encuentra tu empresa?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {secciones.map((seccion, index) => {
+                                    const promedio = [
+                                        calcularPromedioPorSeccion(0, 5),
+                                        calcularPromedioPorSeccion(5, 10),
+                                        calcularPromedioPorSeccion(10, 15),
+                                        calcularPromedioPorSeccion(15, 20),
+                                        calcularPromedioPorSeccion(20, 25),
+                                    ][index];
 
-            const mensaje = obtenerMensajePorSeccion(seccion, promedio);
+                                    const mensaje = obtenerMensajePorSeccion(seccion, promedio);
 
-            return (
-                <tr key={index} className="hover:bg-red-100"> {/* Efecto hover en rojo claro */}
-                    <td className="px-4 py-2 border-b border-red-500 text-red-900">{seccion}</td>
-                    <td className="px-4 py-2 border-b border-red-500 text-red-900">{promedio.toFixed(2)}</td>
-                    <td className="px-4 py-2 border-b border-red-500 text-red-900 text-center">{mensaje}</td> {/* Texto centrado */}
-                </tr>
-            );
-        })}
-    </tbody>
-</table>
+                                    return (
+                                        <tr key={index} className="hover:bg-red-100"> {/* Efecto hover en rojo claro */}
+                                            <td className="px-4 py-2 border-b border-red-500 text-red-900">{seccion}</td>
+                                            <td className="px-4 py-2 border-b border-red-500 text-red-900">{promedio.toFixed(2)}</td>
+                                            <td className="px-4 py-2 border-b border-red-500 text-red-900 text-center">{mensaje}</td> {/* Texto centrado */}
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
 
                     </div>
                 </div>
